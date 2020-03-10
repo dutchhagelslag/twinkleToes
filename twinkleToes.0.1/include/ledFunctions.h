@@ -1,6 +1,7 @@
 #ifndef ledFunctions_h
 #define ledFunctions_h
 
+#include<Arduino.h>
 #include <FastLED.h>
 
 #define NUM_LEDS 30
@@ -16,7 +17,7 @@ class FatherLights{
     bool done = false;
   public:
     virtual void work()=0;
-    virtual bool timeToDie();
+    virtual bool timeToDie()const;
     void die();
     virtual ~FatherLights(){};
   };
@@ -34,8 +35,8 @@ class Queue{
 
     FatherLights* pop();
 
-    bool isEmpty();
-    bool isFull();
+    bool isEmpty()const;
+    bool isFull()const;
 };
 
 class ColorRun:public FatherLights{
