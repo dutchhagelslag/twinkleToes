@@ -1,47 +1,44 @@
-#include <Arduino.h>
+#include <Arduino.h> // kill w/ bit manipulation
 #include <FastLED.h>
 #include"ledFunctions.h"
+
+//       If you need space, comment out functions u dont use.
+
+//================All Lights must obey FatherLights==================\\
 
 bool FatherLights::timeToDie()const{return done;}
 void FatherLights::die(){done = true;}
 
+//===================================================================\\
 
-Queue::Queue(uint8_t arraySize):capacity(arraySize){
-    data = new FatherLights*[arraySize];
+Processes::Processes(uint8_t arraySize):capacity(arraySize){
+    data = new FatherLights*[arraySize]; //rewrite for stack if low RAM
     }
       
-Queue::~Queue(){
-    for(uint8_t i = 0; i < count; i++){
-    delete data[front];
-    front = (front+1)%capacity;
-    }
-    delete[] data;
-    }
+void Processes::add(FatherLights* process) {
     
-void Queue::enqueue(FatherLights* object) {
-    if(isFull()){
-        return;
-    }
-    data[rear] = object;
-    rear = (rear+1)%capacity;
-    count++;
 }
 
-FatherLights* Queue::pop(){
-    if(isEmpty()){
-        return nullptr;
-    }
-    FatherLights* hold = data[front];
-    front = (front+1)%capacity;
-    count--;      
-    return hold;
+void Processes::remove(size_t index){
+    data[index] = data[capacity-1]; 
+    delete data[capacity-1];
+    data[capacity-1] = nullptr;
 }
 
-bool Queue::isEmpty()const{return (count == 0);}
-bool Queue::isFull()const{return (count == capacity);}
+size_t Processes::scan()const{
+    for(size_t i = 0; i < capacity; i++){
+        if(data[i]->timeToDie()){
+            return i;
+        }
+    }
+    return 9999999;
+};
 
+bool Processes::isFull()const{return (count == capacity);}
 
-ColorRun::ColorRun(uint8_t color):color(color){};
+//===================================================================\\
+
+ColorRun::ColorRun(uint8_t hue):hue(hue){};
         
 bool ColorRun::timeToDie()const{return done;}
 
@@ -50,7 +47,7 @@ void ColorRun::work(){
     if(currentLed > 1){
     leds[currentLed-1].fadeToBlackBy(64);
     }
-    leds[currentLed] = CHSV(color,100,255);
+    leds[currentLed] = CHSV(hue,70,255);
     currentLed += 1;
     if(currentLed == NUM_LEDS){
     die();  
@@ -61,3 +58,6 @@ void ColorRun::work(){
 void ColorShift::work(){
 
 }
+
+//=======================================================
+
