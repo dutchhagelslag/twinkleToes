@@ -4,6 +4,8 @@
 
 FASTLED_USING_NAMESPACE
 
+//abandoned 
+
 //rewrite with define macro if u need space, pin 3 is reserved 
 uint8_t sensorPins[] = {2}; 
 
