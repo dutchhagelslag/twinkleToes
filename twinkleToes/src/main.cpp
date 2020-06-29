@@ -1,21 +1,19 @@
 #include <Arduino.h>
 #include <FastLED.h>
-#include<Thread.h>
-#include<ThreadController.h>
+#include <Thread.h>
+#include <StaticThreadController.h>
 
 #include"lightThreads.h"
-
+#include"EffectController.h"
 CRGB leds[NUM_LEDS];
 
-ThreadController threadcontroller(100);
+Thread darken(darkenFunction,50);
 
-DigitalSensor sensor1(2,&threadcontroller);
+EffectController<Traveling> travelingController;
 
-AnalogSensor sensor2(A2,&threadcontroller);
+AnalogSensor analogSensor(4);
 
-void darken(){
-  fadeToBlackBy(leds, NUM_LEDS, 10);
-}
+TapSensor TapSensor(5);
 
 void setup() {
 
@@ -24,15 +22,28 @@ void setup() {
   FastLED.addLeds<WS2811, DATA_PIN, RGB>(leds, NUM_LEDS);
   FastLED.clear();
   FastLED.setBrightness(BRIGHTNESS);
-
- 
+  // fill_solid(leds,NUM_LEDS,CRGB::Red);
+  // FastLED.show();
+  int hueHold = 0;
+  for(int i = 0; i < MAX_THREADS; i++){
+    travelingController.array[i]->hue = hueHold;
+    hueHold += 25;
+  }
+   
 }
 
 void loop(){
-  sensor1.run();
-  sensor2.run();
-  
-  threadcontroller.run();
 
+  if(darken.shouldRun()){
+    darken.run();
+  }
+
+  if(TapSensor.check()){
+    travelingController.add();
+    
+  }
+
+  travelingController.run();
+  
   FastLED.show();
 }
