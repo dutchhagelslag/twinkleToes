@@ -3,17 +3,29 @@
 #include <Thread.h>
 #include <StaticThreadController.h>
 
-#include"lightThreads.h"
-#include"EffectController.h"
+#include"TwinkleToe.h"
+
+#define COLOR_ORDER GRB
+
+const int NUM_LEDS = 50;
+const int DATA_PIN = 3;
+const int BRIGHTNESS = 96;
+const int THREAD_RATE = 100;
+
+
 CRGB leds[NUM_LEDS];
 
 Thread darken(darkenFunction,50);
 
 EffectController<Traveling> travelingController;
 
-AnalogSensor analogSensor(4);
+EffectController<TravelingPieces> pieces;
+
+AnalogSensor analogSensor(A4);
 
 TapSensor TapSensor(5);
+
+HoldSensor hold(6,&pieces);
 
 void setup() {
 
@@ -24,26 +36,24 @@ void setup() {
   FastLED.setBrightness(BRIGHTNESS);
   // fill_solid(leds,NUM_LEDS,CRGB::Red);
   // FastLED.show();
-  int hueHold = 0;
-  for(int i = 0; i < MAX_THREADS; i++){
-    travelingController.array[i]->hue = hueHold;
-    hueHold += 25;
-  }
    
 }
 
 void loop(){
 
-  if(darken.shouldRun()){
-    darken.run();
-  }
+  // if(darken.shouldRun()){
+  //   darken.run();
+  // }
 
   if(TapSensor.check()){
     travelingController.add();
-    
   }
 
+  hold.check();
+  
   travelingController.run();
+  
+  pieces.run();
   
   FastLED.show();
 }
