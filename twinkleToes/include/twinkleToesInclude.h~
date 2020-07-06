@@ -1,0 +1,11 @@
+#ifndef twinkleToesInclude_h
+#define twinkleToesInclude_h
+
+#define NUM_LEDS 50
+#define DATA_PIN 3
+#define BRIGHTNESS 96
+#define COLOR_ORDER GRB
+#define MAX_THREADS 15
+#define THREAD_RATE 100
+
+#endif
