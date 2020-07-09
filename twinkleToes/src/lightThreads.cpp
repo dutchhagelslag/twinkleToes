@@ -10,9 +10,12 @@ void darkenFunction(){
   fadeToBlackBy(leds, NUM_LEDS, 40);
 }
 
+//flip enabled flag when complete
+
 void LightThread::setHue(uint8_t input){
   hue = input;
 }
+
 
 void HueTraveling::run(){
   if(index == NUM_LEDS){
@@ -27,15 +30,24 @@ void HueTraveling::run(){
 }
 
 void HueTraveling::activate(uint8_t input){
-  enable = true;
   hue = input;
+  HueTraveling::enabled = true;
 }
 
-void TravelingPieces::run(){
-  if(!enabled){
-    return;
-  }
-  
+
+
+
+
+void SpeedTraveling::activate(uint8_t input){
+  interval = input;
+  SpeedTraveling::enabled = true;
+}
+
+
+
+
+
+void TravelingPieces::run(){  
   for(int i = front; i < end; i++){
     leds[i].setHSV(hue,255,200);
   }
@@ -55,4 +67,10 @@ void TravelingPieces::run(){
   }
   
   runned();
+}
+
+void TravelingPieces::activate(uint8_t input){
+  if(input > 0){
+    return;
+  }
 }

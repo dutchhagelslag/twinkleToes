@@ -10,50 +10,52 @@
 const int NUM_LEDS = 50;
 const int DATA_PIN = 3;
 const int BRIGHTNESS = 96;
-const int THREAD_RATE = 100;
+const int THREAD_RATE = 10;
 
 
 CRGB leds[NUM_LEDS];
 
-Thread darken(darkenFunction,50);
+Thread darken(darkenFunction,100);
 
-EffectController<Traveling> travelingController;
+EffectController<SpeedTraveling> travelingController;
 
 EffectController<TravelingPieces> pieces;
 
-AnalogSensor analogSensor(A4);
+AnalogSensor sensitive(A4);
 
-TapSensor TapSensor(5);
-
-HoldSensor hold(6,&pieces);
+TapSensor tap(5);
 
 void setup() {
 
   delay(2000); //sanity check, youve got 2 seconds to get ur shit together
 
+  pinMode(13,OUTPUT);
+  
   FastLED.addLeds<WS2811, DATA_PIN, RGB>(leds, NUM_LEDS);
   FastLED.clear();
   FastLED.setBrightness(BRIGHTNESS);
   // fill_solid(leds,NUM_LEDS,CRGB::Red);
   // FastLED.show();
-   
+
+  for(int i = 0; i < MAX_THREADS; i++){
+    travelingController.array[i]->setHue(10*i);
+    }
+  
+  travelingController.attachSensor(sensitive);
+  // travelingController.attachSensor(tap);
 }
 
 void loop(){
 
-  // if(darken.shouldRun()){
-  //   darken.run();
-  // }
-
-  if(TapSensor.check()){
-    travelingController.add();
+  if(darken.shouldRun()){
+    darken.run();
   }
 
-  hold.check();
+  travelingController.check();
   
-  travelingController.run();
-  
-  pieces.run();
+  if(travelingController.shouldRun()){
+    travelingController.run();
+  }
   
   FastLED.show();
 }

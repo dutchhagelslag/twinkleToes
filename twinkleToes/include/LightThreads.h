@@ -6,38 +6,38 @@
 #include<Arduino.h>
 #include<EffectController.h>
 #include"Configuration.h"
-
+#include"Sensors.h"
 
 void darkenFunction();
 
 class LightThread:public Thread{
-private:
-  
 public:
-  LightThread(unsigned long _interval = THREAD_RATE):Thread(NULL,_interval){}
-
-  virtual void run(){};
-  virtual void activate(uint8_t input = 0){};
-
-  void setHue(uint8_t input);
-
   uint8_t hue = 150;
+
+  LightThread():Thread(NULL,THREAD_RATE){}
+  virtual void run(){};
+  virtual void activate(uint8_t input){};
+  void setHue(uint8_t input);
 };
+
+
 
 class HueTraveling:public LightThread{
 private:
   uint8_t index = 0;
-  
 public:
-
-  HueTraveling(unsigned long _interval = THREAD_RATE):LightThread(_interval){}
-  
+  HueTraveling():LightThread(){}
   void run();
   void activate(uint8_t input);
 };
 
-class SpeedTraveling:publicLightThread{
-}
+
+
+class SpeedTraveling:public HueTraveling{
+public:
+  SpeedTraveling():HueTraveling(){}
+  void activate(uint8_t input);
+};
 
 
 class TravelingPieces:public LightThread{
@@ -45,8 +45,8 @@ public:
   uint8_t front = 0;
   uint8_t end = 0;
   bool released = false;
-public:
-  TravelingPieces(unsigned long _interval = THREAD_RATE):LightThread(_interval){}
+
+  TravelingPieces():LightThread(){}
   void run();
   void activate(uint8_t input);
 }; 

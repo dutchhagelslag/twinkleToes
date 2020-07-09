@@ -1,20 +1,15 @@
 #ifndef sensors_h
 #define sensors_h
 
-#include<FastLED.h>
-#include"EffectController.h"
-#include"LightThreads.h"
-
 class Sensor{
  protected:
   int pin;
   
  public:
- Sensor(int pin):pin(pin){
-    pinMode(pin, INPUT);
-  }
-};
+  Sensor(int pin);
+  virtual int check()=0;
 
+};
 
 class AnalogSensor:public Sensor{
  public:
@@ -23,6 +18,7 @@ class AnalogSensor:public Sensor{
   int check();  
 
 };
+
 
 class TapSensor:public Sensor{
  protected:
@@ -33,21 +29,14 @@ class TapSensor:public Sensor{
  public:
   TapSensor(int pin):Sensor(pin){}
 
-  virtual bool check();
-
+  int check();
 };
 
 class HoldSensor:public TapSensor{
- private:
-  EffectController<TravelingPieces>* controller = nullptr;
-  TravelingPieces* item;
-  
- public:
-  HoldSensor(int pin, EffectController<TravelingPieces>* controller):TapSensor(pin), controller(controller){}
+public:
+  HoldSensor(int pin):TapSensor(pin){}
 
-  bool check();
+  int check();
 };
-
-
 
 #endif
