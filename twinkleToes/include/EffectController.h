@@ -11,30 +11,28 @@ template<class T>
 class EffectController:public Thread{  
 private:
   Sensor* sensor;
+  
 public:
   T* array[MAX_THREADS];
   
-  EffectController(unsigned long interval = THREAD_RATE):Thread(NULL,interval){
+  EffectController(unsigned long interval = CONTROLLER_RATE):Thread(NULL,interval){
 
     for(size_t i = 0; i < MAX_THREADS; i++){
       array[i] = new T();
       array[i]->enabled = false;
     }
   }
-
+  
   void check(){
-    int sensorValue = sensor->check();
-    if(sensorValue > 0){
-      add(sensorValue);
+    if(sensor->check() > 0){
+      add();
     }
-    return;
   }
   
-  void add(uint8_t input = 0){
+  void add(){
     for(size_t i = 0; i < MAX_THREADS; i++){
       if(not (array[i]->enabled)){
-	array[i]->enabled = true;
-	array[i]->activate(input);
+	array[i]->activate(sensor);
 	return;
       }
     }

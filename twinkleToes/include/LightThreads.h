@@ -16,7 +16,7 @@ public:
 
   LightThread():Thread(NULL,THREAD_RATE){}
   virtual void run(){};
-  virtual void activate(uint8_t input){};
+  virtual void activate(Sensor* input){};
   void setHue(uint8_t input);
 };
 
@@ -28,7 +28,7 @@ private:
 public:
   HueTraveling():LightThread(){}
   void run();
-  void activate(uint8_t input);
+  void activate(Sensor* input);
 };
 
 
@@ -36,7 +36,7 @@ public:
 class SpeedTraveling:public HueTraveling{
 public:
   SpeedTraveling():HueTraveling(){}
-  void activate(uint8_t input);
+  void activate(Sensor* input);
 };
 
 
@@ -45,10 +45,13 @@ public:
   uint8_t front = 0;
   uint8_t end = 0;
   bool released = false;
-
+  
+  Sensor* sensor = nullptr;
+  bool chosen = false; 
+  
   TravelingPieces():LightThread(){}
   void run();
-  void activate(uint8_t input);
+  void activate(Sensor* input);
 }; 
 
 

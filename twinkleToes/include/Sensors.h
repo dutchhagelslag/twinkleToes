@@ -4,11 +4,13 @@
 class Sensor{
  protected:
   int pin;
-  
- public:
+public:
   Sensor(int pin);
   virtual int check()=0;
-
+  void lock();
+  void unlock();
+  
+  bool locked = false;
 };
 
 class AnalogSensor:public Sensor{
@@ -16,7 +18,7 @@ class AnalogSensor:public Sensor{
   AnalogSensor(int pin):Sensor(pin){}
 
   int check();  
-
+  
 };
 
 

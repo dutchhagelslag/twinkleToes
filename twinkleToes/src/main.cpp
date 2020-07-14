@@ -1,7 +1,6 @@
 #include <Arduino.h>
 #include <FastLED.h>
 #include <Thread.h>
-#include <StaticThreadController.h>
 
 #include"TwinkleToe.h"
 
@@ -10,8 +9,9 @@
 const int NUM_LEDS = 50;
 const int DATA_PIN = 3;
 const int BRIGHTNESS = 96;
-const int THREAD_RATE = 10;
 
+const int CONTROLLER_RATE = 10;
+const int THREAD_RATE = 20;
 
 CRGB leds[NUM_LEDS];
 
@@ -23,7 +23,9 @@ EffectController<TravelingPieces> pieces;
 
 AnalogSensor sensitive(A4);
 
-TapSensor tap(5);
+HoldSensor hold(5);
+
+// TapSensor tap(5);
 
 void setup() {
 
@@ -40,22 +42,27 @@ void setup() {
   for(int i = 0; i < MAX_THREADS; i++){
     travelingController.array[i]->setHue(10*i);
     }
-  
-  travelingController.attachSensor(sensitive);
+
+  pieces.attachSensor(hold);
+  // travelingController.attachSensor(sensitive);
   // travelingController.attachSensor(tap);
 }
 
 void loop(){
 
-  if(darken.shouldRun()){
-    darken.run();
-  }
+  // if(darken.shouldRun()){
+  //   darken.run();
+  // }
 
-  travelingController.check();
+  // travelingController.check();
   
-  if(travelingController.shouldRun()){
-    travelingController.run();
+  // if(travelingController.shouldRun()){
+  //   travelingController.run();
+  // }
+
+  pieces.check();
+  if(pieces.shouldRun()){
+    pieces.run();
   }
-  
   FastLED.show();
 }
