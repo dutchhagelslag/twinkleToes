@@ -15,10 +15,10 @@ private:
 public:
   T* array[MAX_THREADS];
   
-  EffectController(unsigned long interval = CONTROLLER_RATE):Thread(NULL,interval){
+  EffectController(unsigned long interval = 0):Thread(NULL,interval){
 
     for(size_t i = 0; i < MAX_THREADS; i++){
-      array[i] = new T();
+      array[i] = new T(); 
       array[i]->enabled = false;
     }
   }
@@ -38,7 +38,12 @@ public:
     }
   }
   
+  //consider adding check() call
   void run(){
+    //may comment out this block.
+    // if(!shouldRun()){
+    //   return;
+    // }
     unsigned long time = millis();
     
     for(int i = 0; i < MAX_THREADS; i++){

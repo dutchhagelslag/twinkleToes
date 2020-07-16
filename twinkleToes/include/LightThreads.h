@@ -4,7 +4,6 @@
 #include<Thread.h>
 #include<FastLED.h>
 #include<Arduino.h>
-#include<EffectController.h>
 #include"Configuration.h"
 #include"Sensors.h"
 
@@ -21,24 +20,38 @@ public:
 };
 
 
-
-class HueTraveling:public LightThread{
+class Traveling:public LightThread{
 private:
+  uint16_t start = 0;
+  uint8_t end = NUM_LEDS;
+  bool orientation = true; // true == 0 -> NUM_LEDS
+  uint8_t moveInterval = 1;
   uint8_t index = 0;
 public:
-  HueTraveling():LightThread(){}
+  Traveling():LightThread(){}
+  
+  void setStart(uint8_t input);
+  void setEnd(uint8_t input);
+  void setJump(uint8_t input);
+  void reverse();
   void run();
+  
   void activate(Sensor* input);
 };
 
-
-
-class SpeedTraveling:public HueTraveling{
+class HueTraveling:public Traveling{
 public:
-  SpeedTraveling():HueTraveling(){}
+  HueTraveling():Traveling(){}
   void activate(Sensor* input);
 };
 
+class SpeedTraveling:public Traveling{
+public:
+  SpeedTraveling():Traveling(){}
+  void activate(Sensor* input);
+};
+
+ 
 
 class TravelingPieces:public LightThread{
 public:
