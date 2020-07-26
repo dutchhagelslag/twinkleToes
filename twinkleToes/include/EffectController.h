@@ -28,22 +28,24 @@ public:
       add();
     }
   }
-  
+
+  //passes a sensor and activates a lightThread object
   void add(){
     for(size_t i = 0; i < MAX_THREADS; i++){
-      if(not (array[i]->enabled)){
+      if(!(array[i]->locked)){
 	array[i]->activate(sensor);
 	return;
       }
     }
   }
   
-  //consider adding check() call
   void run(){
     //may comment out this block.
     // if(!shouldRun()){
     //   return;
     // }
+    check();
+    
     unsigned long time = millis();
     
     for(int i = 0; i < MAX_THREADS; i++){

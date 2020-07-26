@@ -1,16 +1,19 @@
 #ifndef sensors_h
 #define sensors_h
 
+//Sensor objects
+
 class Sensor{
  protected:
   int pin;
+  bool locked = false;
 public:
   Sensor(int pin);
   virtual int check()=0;
+
+  //sensor's check call will return 0 when locked.
   void lock();
   void unlock();
-  
-  bool locked = false;
 };
 
 class AnalogSensor:public Sensor{

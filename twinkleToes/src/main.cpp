@@ -15,19 +15,15 @@ CRGB leds[NUM_LEDS];
 
 Thread darken(darkenFunction,100);
 
-SpeedTraveling speed();
-
-TravelingPieces pieces();
-
 EffectController<Traveling> travelingController;
 
-// EffectController<TravelingPieces> pieces;
+EffectController<TravelingPieces> pieces;
 
 AnalogSensor sensitive(A4);
 
-// HoldSensor hold(5);
+HoldSensor hold(5);
 
-TapSensor tap(5);
+// TapSensor tap(5);
 
 void setup() {
 
@@ -44,32 +40,34 @@ void setup() {
   //Configure individual lightThreads which are exposed in the EffectController
   //MAX_THREADS is the amount of threads held by the controller
   //This can be configured in Configuration.h
-  for(int i = 0; i < MAX_THREADS; i++){
-    travelingController.array[i]->setHue(20*i);
-  }
+  // for(int i = 0; i < MAX_THREADS; i++){
+  //   travelingController.array[i]->setHue(20*i);
+  // }
 
-  travelingController.array[2]->setStart(6);
+  // for(int i = 0; i < MAX_THREADS; i+=2){
+  //   travelingController.array[i]->setStart(NUM_LEDS/2);
+  //   travelingController.array[i]->setEnd(NUM_LEDS);
+  // }
   
-  for(int i = 1; i < MAX_THREADS; i+=2){
-    travelingController.array[i]->setStart(NUM_LEDS);
-    travelingController.array[i]->setEnd(0);
-    travelingController.array[i]->reverse();
-  }
+  // for(int i = 1; i < MAX_THREADS; i+=2){
+  //   travelingController.array[i]->setStart(NUM_LEDS/2);
+  //   travelingController.array[i]->setEnd(0);
+  //   travelingController.array[i]->reverse();
+  // }
 
-  travelingController.array[3]->setStart(15);
 
   //Attach sensors to effectcontrollers
-  // pieces.attachSensor(hold);
+  pieces.attachSensor(hold);
   //travelingController.attachSensor(sensitive);
-  travelingController.attachSensor(tap);
+  // travelingController.attachSensor(tap);
 }
 
 void loop(){
 
   // For a gradual fade on all LEDs
-  if(darken.shouldRun()){
-    darken.run();
-  }
+  // if(darken.shouldRun()){
+  //   darken.run();
+  // }
 
   // travelingController.check();
   // if(travelingController.shouldRun()){
@@ -82,8 +80,7 @@ void loop(){
   //   pieces.run();
   // }
 
-  travelingController.check();
-  travelingController.run();
-  
+  // travelingController.run();
+  pieces.run();
   FastLED.show();
 }

@@ -22,6 +22,10 @@ int AnalogSensor::check(){
   return map(analogRead(pin),0,1023,0,255);
 }
 
+int HoldSensor::check(){
+  return digitalRead(pin);
+}
+
 int TapSensor::check(){     
   // reads pin, if timer is zero adds new time,
   bool on = digitalRead(pin);
@@ -41,26 +45,6 @@ int TapSensor::check(){
   else if(on && millis() - debounceTime > debounceInterval && stillPressed == false){
     debounceTime = 0;
     stillPressed = true;    
-    return 1;
-  }
-  return 0;
-}
-
-int HoldSensor::check(){
-  bool on = digitalRead(pin);
-
-  if(!on){
-    stillPressed = false;
-    return 0;
-  }
-   
-  else if(on && debounceTime == 0){
-    debounceTime = millis();
-    return 0;
-  }
-   
-  else if(on && millis() - debounceTime > debounceInterval){
-    debounceTime = 0;
     return 1;
   }
   return 0;

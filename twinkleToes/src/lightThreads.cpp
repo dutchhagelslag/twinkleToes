@@ -21,18 +21,18 @@ void LightThread::setHue(uint8_t input){
 
 
 //
-
-
 void Traveling::run(){
   if(index == end){
     index = start;
     enabled = false;
+    locked = false;
     runned();
     return;
   }
 
   leds[index].setHSV(hue,155,200);
 
+  //decides if the light goes left or right
   (orientation) ? index += moveInterval: index -= moveInterval;
   runned();
 }
@@ -55,9 +55,9 @@ void Traveling::setJump(uint8_t input){
 }
 
 void Traveling::activate(Sensor* input){
-  Traveling::enabled = true;
+  enabled = true;
+  locked = true;
 }
-
 
 //
 
@@ -65,32 +65,38 @@ void Traveling::activate(Sensor* input){
 void HueTraveling::activate(Sensor* input){
   hue = input->check();
   HueTraveling::enabled = true;
+  locked = true;
 }
 
 void SpeedTraveling::activate(Sensor* input){
   interval = input->check();
   SpeedTraveling::enabled = true;
+  locked = true;
 }
-
 
 //
 
+void TravelingPieces::activate(Sensor* input){
+  if(enabled){return;}
+  
+  sensor = input;
+  TravelingPieces::enabled = true;
+}
 
 void TravelingPieces::run(){
-  delay(100);
   // digitalWrite(13,HIGH); delay(100); digitalWrite(13,LOW);
+
+  //check to see if sensor has been released
   if(sensor->check() == 0){
     released = true;
+    locked = true;
   }
-  
+
   leds[end].setHSV(hue,255,200);
 
-  
+  //starts cleanup
   if(released){
     leds[front].setHSV(hue,255,0);
-    if(sensor->locked){
-      sensor->unlock();
-    }
   }
   
   if(end < NUM_LEDS){
@@ -100,21 +106,14 @@ void TravelingPieces::run(){
   if(released && front < NUM_LEDS){
     front++;
   }
-
+  
+  //reset pattern
   if(front == NUM_LEDS){
     enabled = false;
     released = false;
+    locked = false;
     front = 0; end = 0;
   }
   
   runned();
-}
-
-void TravelingPieces::activate(Sensor* input){
-  sensor = input;
-  if(!(sensor->locked)){
-    TravelingPieces::enabled = true;
-    sensor->lock();
-    runned();
-  }
 }
