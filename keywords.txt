@@ -1,0 +1,29 @@
+# Datatypes
+
+EffectController	KEYWORD1
+
+HoldSensor 		KEYWORD1
+Analogsensor 		KEYWORD1
+TapSensor 		KEYWORD1
+
+HueTraveling 		KEYWORD1
+SpeedTraveling 		KEYWORD1
+LightThread 		KEYWORD1
+TravelingPieces 	KEYWORD1
+
+
+# Functions
+
+check			 KEYWORD2
+add			 KEYWORD2
+run	 		 KEYWORD2
+setHue			 KEYWORD2
+attachSensor		 KEYWORD2 
+
+lock			 KEYWORD2
+unlock 			 KEYWORD2
+check 			 KEYWORD2
+
+activate	 	 KEYWORD2
+
+
