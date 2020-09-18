@@ -33,7 +33,7 @@ void Traveling::run(){
   leds[index].setHSV(hue,155,200);
 
   //decides if the light goes left or right
-  (orientation) ? index += moveInterval: index -= moveInterval;
+  index += moveInterval;
   runned();
 }
 
@@ -46,10 +46,6 @@ void Traveling::setEnd(uint8_t input){
   end = input;
 }
 
-void Traveling::reverse(){
-  orientation = !orientation;
-}
-
 void Traveling::setJump(uint8_t input){
   moveInterval = input;
 }
@@ -57,6 +53,10 @@ void Traveling::setJump(uint8_t input){
 void Traveling::activate(Sensor* input){
   enabled = true;
   locked = true;
+}
+
+LightThread* Traveling::getCopy(){
+  return new Traveling(*this);
 }
 
 //
@@ -68,10 +68,18 @@ void HueTraveling::activate(Sensor* input){
   locked = true;
 }
 
+LightThread* HueTraveling::getCopy(){
+  return new HueTraveling(*this);
+}
+
 void SpeedTraveling::activate(Sensor* input){
   interval = input->check();
   SpeedTraveling::enabled = true;
   locked = true;
+}
+
+LightThread* SpeedTraveling::getCopy(){
+  return new SpeedTraveling(*this);
 }
 
 //
@@ -116,4 +124,8 @@ void TravelingPieces::run(){
   }
   
   runned();
+}
+
+LightThread* TravelingPieces::getCopy(){
+  return new TravelingPieces(*this);
 }

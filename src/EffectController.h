@@ -7,22 +7,39 @@
 #include"Configuration.h"
 #include"LightThreads.h"
 
-template<class T>
+//template<class T>
 class EffectController:public Thread{  
 private:
   Sensor* sensor;
-  
+  int capacity;
+  int last = 0;
+  int upNext = 0;
 public:
-  T* array[MAX_THREADS];
+  LightThread* array[MAX_THREADS];
   
-  EffectController(unsigned long interval = 0):Thread(NULL,interval){
+  EffectController(int size = 10, unsigned long interval = 0):Thread(NULL,interval){
+    capacity = size;
+  }
 
-    for(size_t i = 0; i < MAX_THREADS; i++){
-      array[i] = new T(); 
-      array[i]->enabled = false;
+  void fill(LightThread* pattern){
+    while(last < capacity){
+      array[last] = pattern->getCopy();
+      last++;
     }
   }
-  
+
+  void add(LightThread* pattern){
+    array[last] = pattern->getCopy();
+    last++;
+  }
+
+  void add(LightThread* pattern[], int length){
+    for(int i = 0; i < length && last < capacity; i++){
+      array[last] = pattern[i]->getCopy();
+      last++;
+    }
+  }
+
   void check(){
     if(sensor->check() > 0){
       add();
@@ -31,9 +48,12 @@ public:
 
   //passes a sensor and activates a lightThread object
   void add(){
-    for(size_t i = 0; i < MAX_THREADS; i++){
+    for(int i = 0; i < last; i++){
+      int j = (i+upNext)% last;
+      
       if(!(array[i]->locked)){
-	array[i]->activate(sensor);
+	array[j]->activate(sensor);
+	upNext = j + 1;
 	return;
       }
     }
@@ -48,7 +68,7 @@ public:
     
     unsigned long time = millis();
     
-    for(int i = 0; i < MAX_THREADS; i++){
+    for(int i = 0; i < last; i++){
       if(array[i]->shouldRun(time)){
 	array[i]->run();
       }
@@ -58,7 +78,7 @@ public:
     
 
   void setHue(uint8_t input){
-    for(int i = 0; i < MAX_THREADS; i++){
+    for(int i = 0; i < last; i++){
       array[i]->setHue(input);
     }
   }

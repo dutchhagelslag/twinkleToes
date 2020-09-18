@@ -9,5 +9,5 @@
 #include"LightThreads.h"
 #include"EffectController.h"
 #include"Sensors.h"
-
+#include"Manager.h"
 #endif

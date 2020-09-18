@@ -14,14 +14,17 @@ class LightThread:public Thread{
 public:
   uint8_t hue = 150;
   bool locked = false;
-
-  LightThread():Thread(NULL,THREAD_RATE){}
+  
+  LightThread():Thread(NULL,THREAD_RATE){enabled = false;}
 
   //runs pattern based on sensor reading
   virtual void run(){};
 
   //recieves Sensor and enables
   virtual void activate(Sensor* input){};
+
+  //return whole derived class under base pointer 
+  virtual LightThread* getCopy()=0;
 
   void setHue(uint8_t input);
 };
@@ -31,18 +34,16 @@ class Traveling:public LightThread{
 private:
   uint16_t start = 0; // start index
   uint8_t end = NUM_LEDS; 
-  bool orientation = true; // true == lights move from 0 to NUM_LEDS
   uint8_t moveInterval = 1;
   uint8_t index = 0; // current index
 public:
   Traveling():LightThread(){}  
   void run();
   void activate(Sensor* input);
-
   void setStart(uint8_t input);
   void setEnd(uint8_t input);
   void setJump(uint8_t input);
-  void reverse();
+  LightThread* getCopy();
 };
 
 //takes variable sensor reading which determines the hue of the traveling light.
@@ -50,6 +51,7 @@ class HueTraveling:public Traveling{
 public:
   HueTraveling():Traveling(){}
   void activate(Sensor* input);
+  LightThread* getCopy();
 };
 
 //takes variable sensor reading which determines the speed of the traveling light.
@@ -57,6 +59,7 @@ class SpeedTraveling:public Traveling{
 public:
   SpeedTraveling():Traveling(){}
   void activate(Sensor* input);
+  LightThread* getCopy();
 };
 
 class TravelingPieces:public LightThread{
@@ -71,6 +74,7 @@ public:
   TravelingPieces():LightThread(){}
   void run();
   void activate(Sensor* input);
+  LightThread* getCopy();
 }; 
 
 

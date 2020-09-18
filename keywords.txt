@@ -3,7 +3,11 @@
 EffectController	KEYWORD1
 
 HoldSensor 		KEYWORD1
+<<<<<<< HEAD
+AnalogSensor 		KEYWORD1
+=======
 Analogsensor 		KEYWORD1
+>>>>>>> 8c45306... configured for use (still needs alot of work)
 TapSensor 		KEYWORD1
 
 HueTraveling 		KEYWORD1
@@ -20,10 +24,13 @@ run	 		 KEYWORD2
 setHue			 KEYWORD2
 attachSensor		 KEYWORD2 
 
+<<<<<<< HEAD
+=======
 lock			 KEYWORD2
 unlock 			 KEYWORD2
 check 			 KEYWORD2
 
 activate	 	 KEYWORD2
+>>>>>>> 8c45306... configured for use (still needs alot of work)
 
 
